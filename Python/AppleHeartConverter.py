@@ -10,6 +10,9 @@ def ExtractHeartRateData(filePath):
     # Find all 'Record' elements with attribute 'type' as 'HKQuantityTypeIdentifierHeartRate'
     heartRateRecords = rootElm.findall(".//Record[@type='HKQuantityTypeIdentifierHeartRate']")
 
+    # Find all 'Record' elements with attribute 'type' as 'HKQuantityTypeIdentifierHeartRateVariabilitySDNN'
+    heartRateVariabilityRecords = rootElm.findall(".//Record[@type='HKQuantityTypeIdentifierHeartRateVariabilitySDNN']")
+
     # Extract the 'value' attribute from each record
     heartRates = [record.get('value') for record in heartRateRecords]
 
