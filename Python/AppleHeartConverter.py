@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
-def ExtractHeartRateData(filePath):
+def ExtractHeartRateData(filePath, date):
     # Parse the XML file
     elmTree = ET.parse(filePath)
 
@@ -14,10 +15,10 @@ def ExtractHeartRateData(filePath):
     heartRateVariabilityRecords = rootElm.findall(".//Record[@type='HKQuantityTypeIdentifierHeartRateVariabilitySDNN']")
 
     # Extract the 'value' attribute from each record
-    heartRates = [(record.get('startDate'), record.get('value')) for record in heartRateRecords]
+    heartRates = [(record.get('startDate'), record.get('value')) for record in heartRateRecords if datetime.strptime(record.get('startDate'), '%Y-%m-%d %H:%M:%S %z').date() == date]
 
     # Extract the 'value' and 'startDate' attributes from each HRV record
-    heartRateVariabilities = [(record.get('value'), record.get('startDate')) for record in heartRateVariabilityRecords]
+    heartRateVariabilities = [(record.get('value'), record.get('startDate')) for record in heartRateVariabilityRecords if datetime.strptime(record.get('startDate'), '%Y-%m-%d %H:%M:%S %z').date() == date]
 
     # Combine heart rate and HRV data
     combinedData = heartRates + heartRateVariabilities
@@ -29,5 +30,6 @@ def ExtractHeartRateData(filePath):
 
 
 # Use the function
-heartRates = ExtractHeartRateData('../../../Desktop/apple_health_export/export.xml')
+date = datetime.strptime('2024-05-20', '%Y-%m-%d').date()
+heartRates = ExtractHeartRateData('../../../Desktop/apple_health_export/export.xml', date)
 print(heartRates)
